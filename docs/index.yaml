@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  node-labeler-operator:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-01-03T23:35:25.831734+02:00"
+    description: A Helm chart for Node Labeler Operator
+    digest: f0c5b0140710f1582e05db15fb79ea48f6e1eb1779caea8c08fc7cb8c7004121
+    name: node-labeler-operator
+    type: application
+    urls:
+    - https://adefenwa7.github.io/nodelabeloperator/node-labeler-operator-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-01-03T23:35:25.83122+02:00"
