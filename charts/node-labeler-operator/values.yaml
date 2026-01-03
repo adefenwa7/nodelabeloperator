@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: controller
+  repository: adeadefenwa/node-labeler-operator
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -17,7 +17,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "controller-manager"
+  name: ""
 
 podAnnotations: {}
 
@@ -62,3 +62,7 @@ controllerManager:
     args:
     - "--leader-elect"
     - "--health-probe-bind-address=:8081"
+
+# Enable to deploy a sample NodeLabel CR for testing
+sampleNodeLabel:
+  enabled: false
