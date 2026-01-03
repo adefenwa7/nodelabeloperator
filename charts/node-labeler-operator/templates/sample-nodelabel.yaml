@@ -1,0 +1,19 @@
+{{- if .Values.sampleNodeLabel.enabled }}
+# Sample NodeLabel CR for testing - disable in production
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: {{ include "node-labeler-operator.fullname" . }}-sample
+  labels:
+    {{- include "node-labeler-operator.labels" . | nindent 4 }}
+spec:
+  nodeSelector: {}
+  labels:
+    managed-by: node-labeler-operator
+  autoDetect:
+    - type: arch
+      labelKey: "node-arch"
+    - type: os
+      labelKey: "node-os"
+  removeOnDelete: true
+{{- end }}
