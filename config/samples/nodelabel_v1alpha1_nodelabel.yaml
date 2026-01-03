@@ -1,0 +1,206 @@
+# Example 1: Static Labels for Worker Nodes
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: worker-node-labels
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+  labels:
+    environment: production
+    team: platform
+    managed-by: node-labeler-operator
+  removeOnDelete: true
+---
+# Example 2: GPU Auto-Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: gpu-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # Detect any GPU (NVIDIA or AMD)
+    - type: gpu
+      labelKey: "gpu"
+      labelValue: "present"
+    # Detect NVIDIA GPU with count as value
+    - type: nvidia-gpu
+      labelKey: "nvidia.com/gpu.count"
+      labelValueFromQuantity: true
+    # Detect AMD GPU
+    - type: amd-gpu
+      labelKey: "amd.com/gpu.present"
+      labelValue: "true"
+  removeOnDelete: true
+---
+# Example 3: High-Resource Node Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: high-resource-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # High Memory Detection (>= 64Gi)
+    - type: memory
+      minQuantity: "64Gi"
+      labelKey: "node.kubernetes.io/high-memory"
+      labelValue: "true"
+    # High CPU Detection (>= 16 cores)
+    - type: cpu
+      minQuantity: "16"
+      labelKey: "node.kubernetes.io/high-cpu"
+      labelValue: "true"
+    # High Ephemeral Storage Detection (>= 500Gi)
+    - type: ephemeral-storage
+      minQuantity: "500Gi"
+      labelKey: "node.kubernetes.io/high-storage"
+      labelValue: "true"
+    # High Pod Capacity Detection (>= 250 pods)
+    - type: pods
+      minQuantity: "250"
+      labelKey: "node.kubernetes.io/high-pod-capacity"
+      labelValue: "true"
+  removeOnDelete: false
+---
+# Example 4: Hugepages Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: hugepages-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # 2Mi Hugepages
+    - type: hugepages-2Mi
+      labelKey: "hugepages-2Mi"
+      labelValue: "available"
+    # 1Gi Hugepages  
+    - type: hugepages-1Gi
+      labelKey: "hugepages-1Gi"
+      labelValue: "available"
+  removeOnDelete: true
+---
+# Example 5: Topology/Architecture Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: topology-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # CPU Architecture (arm64, amd64)
+    - type: arch
+      labelKey: "cpu-arch"
+      # Will copy value from kubernetes.io/arch label
+    # Operating System
+    - type: os
+      labelKey: "node-os"
+      # Will copy value from kubernetes.io/os label
+    # Availability Zone
+    - type: zone
+      labelKey: "availability-zone"
+      onlyIfPresent: true  # Only apply if zone is set
+    # Region
+    - type: region
+      labelKey: "cloud-region"
+      onlyIfPresent: true
+    # Instance Type (for cloud nodes)
+    - type: instance-type
+      labelKey: "vm-type"
+      onlyIfPresent: true
+  removeOnDelete: true
+---
+# Example 6: SR-IOV Network Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: sriov-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # Detect SR-IOV capable nodes (Intel, Mellanox, NVIDIA)
+    - type: sriov
+      labelKey: "network.kubernetes.io/sriov"
+      labelValue: "capable"
+    # Detect specific SR-IOV resource with count
+    - type: sriov
+      resourceName: "intel.com/sriov_netdevice"
+      labelKey: "intel-sriov-devices"
+      labelValueFromQuantity: true
+  removeOnDelete: true
+---
+# Example 7: Custom Extended Resource Detection
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: custom-resource-detection
+spec:
+  nodeSelector: {}
+  autoDetect:
+    # FPGA Detection
+    - type: custom
+      resourceName: "xilinx.com/fpga"
+      minQuantity: "1"
+      labelKey: "fpga"
+      labelValue: "present"
+    # TPU Detection
+    - type: custom
+      resourceName: "google.com/tpu"
+      minQuantity: "1"
+      labelKey: "tpu"
+      labelValue: "present"
+    # Custom Accelerator
+    - type: custom
+      resourceName: "example.com/accelerator"
+      labelKey: "accelerator"
+      labelValueFromQuantity: true
+  removeOnDelete: true
+---
+# Example 8: Comprehensive Node Profiling
+apiVersion: nodelabel.nodelabel.io/v1alpha1
+kind: NodeLabel
+metadata:
+  name: comprehensive-node-profile
+spec:
+  nodeSelector: {}
+  # Static labels
+  labels:
+    managed-by: node-labeler-operator
+    labeled-at: auto
+  # Auto-detection rules
+  autoDetect:
+    # GPU
+    - type: gpu
+      labelKey: "capability/gpu"
+      labelValue: "true"
+    # High memory (>= 128Gi)
+    - type: memory
+      minQuantity: "128Gi"
+      labelKey: "tier/memory"
+      labelValue: "high"
+    # High CPU (>= 32 cores)
+    - type: cpu
+      minQuantity: "32"
+      labelKey: "tier/cpu"
+      labelValue: "high"
+    # Architecture
+    - type: arch
+      labelKey: "node/arch"
+    # OS
+    - type: os
+      labelKey: "node/os"
+    # Zone (if available)
+    - type: zone
+      labelKey: "topology/zone"
+      onlyIfPresent: true
+    # SR-IOV
+    - type: sriov
+      labelKey: "capability/sriov"
+      labelValue: "true"
+    # Hugepages
+    - type: hugepages-2Mi
+      labelKey: "capability/hugepages"
+      labelValue: "true"
+  removeOnDelete: true
