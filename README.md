@@ -89,6 +89,45 @@ spec:
 
 ## Installation
 
+### Install with Helm (Recommended)
+
+The easiest way to install the Node Labeler Operator is using Helm:
+
+```bash
+# Add the Helm repository
+helm repo add node-labeler https://adefenwa7.github.io/nodelabeloperator/
+helm repo update
+
+# Install the operator
+helm install node-labeler node-labeler/node-labeler-operator \
+  --namespace node-labeler-system \
+  --create-namespace
+```
+
+#### Install with Sample NodeLabel for Testing
+
+```bash
+helm install node-labeler node-labeler/node-labeler-operator \
+  --namespace node-labeler-system \
+  --create-namespace \
+  --set sampleNodeLabel.enabled=true
+```
+
+#### Upgrade
+
+```bash
+helm upgrade node-labeler node-labeler/node-labeler-operator \
+  --namespace node-labeler-system
+```
+
+#### Uninstall
+
+```bash
+helm uninstall node-labeler --namespace node-labeler-system
+```
+
+### Install with Kustomize
+
 1. **Install CRDs**:
    ```sh
    make install
